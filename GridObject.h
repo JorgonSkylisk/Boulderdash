@@ -20,9 +20,11 @@ public:
 	void SetLevel(Level* _newLevel);
 
 	sf::Vector2i getGridPosition();
+	bool GetBlocksMovement();
 
 protected:
 
 	sf::Vector2i m_gridPosition;
 	Level* m_level;
+	bool m_blocksMovement;
 };

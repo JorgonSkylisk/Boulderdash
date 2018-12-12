@@ -34,3 +34,8 @@ sf::Vector2i GridObject::getGridPosition()
 {
 	return m_gridPosition;
 }
+
+bool GridObject::GetBlocksMovement()
+{
+	return m_blocksMovement;
+}

@@ -134,6 +134,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Rock.cpp" />
     <ClCompile Include="Storage.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
@@ -147,6 +148,7 @@
     <ClInclude Include="GridObject.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Rock.h" />
     <ClInclude Include="Storage.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>

@@ -22,7 +22,9 @@ public:
 	void LoadNextLevel();
 
 	float GetCellSize();
-	bool moveObjectTo(GridObject* _toMove, sf::Vector2i _targetPos);
+	bool MoveObjectTo(GridObject* _toMove, sf::Vector2i _targetPos);
+	//bool RemoveObject(GridObject* _toMove, sf::Vector2i _targetPos);
+	std::vector< GridObject* > GetObjectAt(sf::Vector2i _targetPos);
 
 private: 
 

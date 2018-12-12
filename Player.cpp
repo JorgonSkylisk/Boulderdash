@@ -1,58 +1,137 @@
 // Project Includes
 #include "Player.h"
-#include "Level.h"
 #include "Framework/AssetManager.h"
+#include "Level.h"
+
+#include "Rock.h"
 
 Player::Player()
 	: GridObject()
+	, m_pendingMove(0, 0)
+	, m_moveSound()
+	, m_bumpSound()
 {
-	m_sprite.setTexture(AssetManager::GetTexture("graphics/player/playerWalkDown1.png"));
+	m_sprite.setTexture(AssetManager::GetTexture("graphics/player/playerStandDown.png"));
+	m_moveSound.setBuffer(AssetManager::GetSoundBuffer("audio/footstep1.ogg"));
+	m_bumpSound.setBuffer(AssetManager::GetSoundBuffer("audio/bump.wav"));
 }
 
 void Player::Input(sf::Event _gameEvent)
 {
-	// Read input from player and convert it into a direction then move in that direction
+	// Read the input from the keyboard and convert it
+	// to a direction to move in (and then move)
 
-	// was event a key Press?
+	// Was the event a key press?
 	if (_gameEvent.type == sf::Event::KeyPressed)
 	{
-		//It was a keypress
+		// Yes it was a key press!
 
-		//Which key?
+		// What key was pressed?
 		if (_gameEvent.key.code == sf::Keyboard::W)
 		{
-			// it was W so move Up
-			AttemptMove(sf::Vector2i(0, -1));
+			// It was W!
+			// Move up
+			m_pendingMove = sf::Vector2i(0, -1);
+			m_sprite.setTexture(AssetManager::GetTexture("graphics/player/playerStandUp.png"));
 		}
 		else if (_gameEvent.key.code == sf::Keyboard::A)
 		{
-			// it was A so move Left
-			AttemptMove(sf::Vector2i(-1, 0));
+			// It was A!
+			// Move left
+			m_pendingMove = sf::Vector2i(-1, 0);
+			m_sprite.setTexture(AssetManager::GetTexture("graphics/player/playerStandLeft.png"));
 		}
 		else if (_gameEvent.key.code == sf::Keyboard::S)
 		{
-			// it was S so move Down
-			AttemptMove(sf::Vector2i(0, 1));
+			// It was S!
+			// Move down
+			m_pendingMove = sf::Vector2i(0, 1);
+			m_sprite.setTexture(AssetManager::GetTexture("graphics/player/playerStandDown.png"));
 		}
 		else if (_gameEvent.key.code == sf::Keyboard::D)
 		{
-			// it was D so move Right
-			AttemptMove(sf::Vector2i(1, 0));
+			// It was D!
+			// Move right
+			m_pendingMove = sf::Vector2i(1, 0);
+			m_sprite.setTexture(AssetManager::GetTexture("graphics/player/playerStandRight.png"));
 		}
 	}
-
 }
+
+void Player::Update(sf::Time _frameTime)
+{
+	// If we have movement waiting to be processed,
+	if (m_pendingMove.x != 0 || m_pendingMove.y != 0)
+	{
+		// move in that direction
+		bool moveSuccessful = AttemptMove(m_pendingMove);
+
+		// Play movememnt sound
+		if (moveSuccessful == true)
+		{
+			m_moveSound.play();
+		}
+		else
+		{
+			m_bumpSound.play();
+		}
+
+		// and clear the pending movement
+		m_pendingMove = sf::Vector2i(0, 0);
+	}
+}
+
 
 bool Player::AttemptMove(sf::Vector2i _direction)
 {
-	// Attempt to move in given direction
+	// Attempt to move in the given direction
 
 	// Get current position
 	// Calculate target position
 	sf::Vector2i targetPos = m_gridPosition + _direction;
 
-	// Check if space ahead is empty
+	// TODO: Check if the space is empty
 
-	// If Empty move to target
-	return m_level->moveObjectTo(this, targetPos);
+	// Get list of objects in our target position
+	std::vector<GridObject*> targetCellContents = m_level->GetObjectAt(targetPos);
+
+	// Check if any of those objects block movement
+	bool blocked = false;
+	GridObject* Blocker = nullptr;
+	for (int i = 0; i < targetCellContents.size(); ++i)
+	{
+		if (targetCellContents[i]->GetBlocksMovement() == true)
+		{
+			blocked = true;
+			Blocker = targetCellContents[i];
+
+		}
+	}
+
+	// If empty, move there
+	if (blocked == false)
+		return m_level->MoveObjectTo(this, targetPos);
+	else
+	{
+		//Blocked
+		//Can blockage be pushed 
+		Rock* PushableRock = dynamic_cast<Rock*>(Blocker);
+
+		//if so attempt to push 
+		if (PushableRock != nullptr)
+		{
+			bool pushSucceeded = PushableRock->AttemptPush(_direction);
+			//if push succeeded 
+			if (pushSucceeded == true)
+			{
+				return m_level->MoveObjectTo(this, targetPos);
+			}
+			//move to new spot(where blockage was)
+		}
+
+	}
+
+	// If movement is blocked, do nothing, return false
+	// Default
+	return false;
 }

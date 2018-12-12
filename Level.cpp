@@ -4,6 +4,7 @@
 #include "Wall.h"
 #include "Storage.h"
 #include "Player.h"
+#include "Rock.h"
 
 // Library Includes
 #include <iostream>
@@ -25,7 +26,7 @@ void Level::Draw(sf::RenderTarget& _target)
 	sf::View camera = _target.getDefaultView();
 
 	// Adjust camera as needed
-	camera.setCenter( m_background[0].size() * m_cellSize / 2 , 
+	camera.setCenter(m_background[0].size() * m_cellSize / 2,
 		m_background.size() * m_cellSize / 2);
 
 	// Draw game world to the window
@@ -59,7 +60,19 @@ void Level::Draw(sf::RenderTarget& _target)
 
 void Level::Update(sf::Time _frameTime)
 {
-	// TODO
+	// rows
+	for (int y = 0; y < m_contents.size(); ++y)
+	{
+		// cells
+		for (int x = 0; x < m_contents[y].size(); ++x)
+		{
+			// sticky outies (grid objects)
+			for (int z = 0; z < m_contents[y][x].size(); ++z)
+			{
+				m_contents[y][x][z]->Update(_frameTime);
+			}
+		}
+	}
 }
 
 void Level::Input(sf::Event _gameEvent)
@@ -78,6 +91,7 @@ void Level::Input(sf::Event _gameEvent)
 		}
 	}
 }
+
 
 void Level::LoadLevel(int _levelToLoad)
 {
@@ -127,7 +141,7 @@ void Level::LoadLevel(int _levelToLoad)
 	// Create the first row in our grid
 	m_background.push_back(std::vector<sf::Sprite>());
 	m_contents.push_back(std::vector<std::vector<GridObject*> >());
-	   
+
 	// Read each character one by one from the file...
 	char ch;
 	// Each time, try to read the next character
@@ -172,6 +186,13 @@ void Level::LoadLevel(int _levelToLoad)
 				wall->SetGridPosition(x, y);
 				m_contents[y][x].push_back(wall);
 			}
+			else if (ch == 'R')
+			{
+				Rock* rock = new Rock();
+				rock->SetLevel(this);
+				rock->SetGridPosition(x, y);
+				m_contents[y][x].push_back(rock);
+			}
 			else if (ch == 'S')
 			{
 				Storage* storage = new Storage();
@@ -190,7 +211,7 @@ void Level::LoadLevel(int _levelToLoad)
 			{
 				std::cerr << "Unrecognised character in level file: " << ch;
 			}
-		} 
+		}
 	}
 
 	// Close the file now that we are done with it
@@ -213,39 +234,62 @@ float Level::GetCellSize()
 	return m_cellSize;
 }
 
-bool Level::moveObjectTo(GridObject* _toMove, sf::Vector2i _targetPos)
+bool Level::MoveObjectTo(GridObject* _toMove, sf::Vector2i _targetPos)
 {
-	// Don't trust other code make sure _toMove is a valid pointer
-	// Also check if target is within the grid
+	// Don't trust other code
+	// Make sure _toMove is a valid pointer
+	// Also check our target position is within the grid
 	if (_toMove != nullptr
 		&& _targetPos.y >= 0 && _targetPos.y < m_contents.size()
 		&& _targetPos.x >= 0 && _targetPos.x < m_contents[_targetPos.y].size())
-
 	{
-		// get current pos of the grid object
+		// Get the current position of the grid object
 		sf::Vector2i oldPos = _toMove->getGridPosition();
 
-		// Find the object in the list using an iterator and the find method
+		// Find the object in the list using an iterator 
+		// and the find method
 		auto it = std::find(m_contents[oldPos.y][oldPos.x].begin(),
-							m_contents[oldPos.y][oldPos.x].end(),
-							_toMove);
+			m_contents[oldPos.y][oldPos.x].end(),
+			_toMove);
 
-		//If we found the object at this location, it will not equal the end of the vector
+		// If we found the object at this location,
+		// it will NOT equal the end of the vector
 		if (it != m_contents[oldPos.y][oldPos.x].end())
 		{
-			// we found the object
+			// We found the object!
 
-			//remove from old position
+			// Remove it from the old position
 			m_contents[oldPos.y][oldPos.x].erase(it);
 
-			//add it to the new postion
+			// Add it to its new position
 			m_contents[_targetPos.y][_targetPos.x].push_back(_toMove);
-			//tell the object it position
+
+			// Tell the object it's new position
 			_toMove->SetGridPosition(_targetPos);
-			//return success
+
+			// Return success
 			return true;
 		}
-
 	}
 
+	// return failure
+	return false;
+}
+
+std::vector< GridObject* > Level::GetObjectAt(sf::Vector2i _targetPos)
+{
+	// Don't trust the data!
+	// Make sure the coordinates are within the vector size
+	if (_targetPos.y >= 0 && _targetPos.y < m_contents.size()
+		&& _targetPos.x >= 0 && _targetPos.x < m_contents[_targetPos.y].size())
+	{
+		// Get the contents
+		// return them
+		return m_contents[_targetPos.y][_targetPos.x];
+	}
+
+	// Default return
+	// Return an empty vector with nothing in it
+	// (default constructor)
+	return std::vector<GridObject*>();
 }
