@@ -5,6 +5,7 @@
 #include "Storage.h"
 #include "Player.h"
 #include "Rock.h"
+#include "Dirt.h"
 
 // Library Includes
 #include <iostream>
@@ -200,6 +201,13 @@ void Level::LoadLevel(int _levelToLoad)
 				storage->SetGridPosition(x, y);
 				m_contents[y][x].push_back(storage);
 			}
+			else if (ch == 'D')
+			{
+				Dirt* dirt = new Dirt();
+				dirt->SetLevel(this);
+				dirt->SetGridPosition(x, y);
+				m_contents[y][x].push_back(dirt);
+			}
 			else if (ch == 'P')
 			{
 				Player* player = new Player();
@@ -325,7 +333,7 @@ bool Level::RemoveObject(GridObject* _toMove, sf::Vector2i _targetPos)
 			//m_contents[_targetPos.y][_targetPos.x].push_back(_toMove);
 
 			// Tell the object it's new position
-			//_toMove->SetGridPosition(_targetPos);
+			_toMove->SetGridPosition(_targetPos);
 
 			// Return success
 			return true;

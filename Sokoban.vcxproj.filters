@@ -56,6 +56,9 @@
     <ClCompile Include="Diamond.cpp">
       <Filter>Game Code</Filter>
     </ClCompile>
+    <ClCompile Include="Dirt.cpp">
+      <Filter>Game Code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Animation.h">
@@ -95,6 +98,9 @@
       <Filter>Game Code</Filter>
     </ClInclude>
     <ClInclude Include="Diamond.h">
+      <Filter>Game Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Dirt.h">
       <Filter>Game Code</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "Framework/AssetManager.h"
 #include "Level.h"
-
+#include "Dirt.h"
 #include "Rock.h"
 
 Player::Player()
@@ -134,4 +134,55 @@ bool Player::AttemptMove(sf::Vector2i _direction)
 	// If movement is blocked, do nothing, return false
 	// Default
 	return false;
+}
+
+bool Player::Delete(sf::Vector2i _direction)
+{
+	// Attempt to move in the given direction
+
+	// Get current position
+	// Calculate target position
+	sf::Vector2i targetPos = m_gridPosition + _direction;
+
+	// TODO: Check if the space is empty
+
+	// Get list of objects in our target position
+	std::vector<GridObject*> targetCellContents = m_level->GetObjectAt(targetPos);
+
+	// Check if any of those objects block movement
+	bool blocked = false;
+	GridObject* Blocker = nullptr;
+	for (int i = 0; i < targetCellContents.size(); ++i)
+	{
+		if (targetCellContents[i]->GetBlocksMovement() == true)
+		{
+			blocked = true;
+			Blocker = targetCellContents[i];
+
+		}
+	}
+
+	// If empty, move there
+	if (blocked == false)
+		return m_level->MoveObjectTo(this, targetPos);
+	else
+	{
+		//Blocked
+		//Can blockage be pushed 
+		Dirt* dirt = dynamic_cast<Dirt*>(Blocker);
+
+		//if so attempt to push 
+		if (dirt != nullptr)
+		{
+
+				return m_level->RemoveObject(this, targetPos);
+			
+			//move to new spot(where blockage was)
+		}
+
+	}
+
+	// If movement is blocked, do nothing, return false
+	// Default
+	//return false;
 }

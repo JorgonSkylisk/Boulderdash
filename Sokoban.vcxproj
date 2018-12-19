@@ -125,6 +125,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Diamond.cpp" />
+    <ClCompile Include="Dirt.cpp" />
     <ClCompile Include="Framework\Animation.cpp" />
     <ClCompile Include="Framework\AnimationSystem.cpp" />
     <ClCompile Include="Framework\AssetManager.cpp" />
@@ -141,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Diamond.h" />
+    <ClInclude Include="Dirt.h" />
     <ClInclude Include="Framework\Animation.h" />
     <ClInclude Include="Framework\AnimationSystem.h" />
     <ClInclude Include="Framework\AssetManager.h" />

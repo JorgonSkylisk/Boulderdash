@@ -22,6 +22,7 @@ public:
 private:
 
 	bool AttemptMove(sf::Vector2i _direction);
+	bool Delete(sf::Vector2i _direction);
 
 	// Data
 
