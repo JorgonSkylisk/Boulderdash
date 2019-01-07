@@ -22,6 +22,7 @@ Level::Level()
 }
 
 
+
 void Level::Draw(sf::RenderTarget& _target)
 {
 	// Create and update
