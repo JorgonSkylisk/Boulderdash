@@ -10,4 +10,6 @@ public:
 
 	Diamond();
 
+	bool Remove(sf::Vector2i _direction);
+
 };

@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Rock.h"
 #include "Dirt.h"
+#include "Diamond.h"
 
 // Library Includes
 #include <iostream>
@@ -215,6 +216,13 @@ void Level::LoadLevel(int _levelToLoad)
 				player->SetGridPosition(x, y);
 				m_contents[y][x].push_back(player);
 			}
+			else if (ch == 'J')
+			{
+				Diamond* diamond = new Diamond();
+				diamond->SetLevel(this);
+				diamond->SetGridPosition(x, y);
+				m_contents[y][x].push_back(diamond);
+			}
 			else
 			{
 				std::cerr << "Unrecognised character in level file: " << ch;
@@ -302,23 +310,21 @@ std::vector< GridObject* > Level::GetObjectAt(sf::Vector2i _targetPos)
 	return std::vector<GridObject*>();
 }
 
-bool Level::RemoveObject(GridObject* _toMove, sf::Vector2i _targetPos)
+bool Level::RemoveObject(GridObject* _toDelete)
 {
 	// Don't trust other code
 // Make sure _toMove is a valid pointer
 // Also check our target position is within the grid
-	if (_toMove != nullptr
-		&& _targetPos.y >= 0 && _targetPos.y < m_contents.size()
-		&& _targetPos.x >= 0 && _targetPos.x < m_contents[_targetPos.y].size())
+	if (_toDelete != nullptr)
 	{
 		// Get the current position of the grid object
-		sf::Vector2i oldPos = _toMove->getGridPosition();
+		sf::Vector2i oldPos = _toDelete->getGridPosition();
 
 		// Find the object in the list using an iterator 
 		// and the find method
 		auto it = std::find(m_contents[oldPos.y][oldPos.x].begin(),
 			m_contents[oldPos.y][oldPos.x].end(),
-			_toMove);
+			_toDelete);
 
 		// If we found the object at this location,
 		// it will NOT equal the end of the vector
@@ -329,11 +335,7 @@ bool Level::RemoveObject(GridObject* _toMove, sf::Vector2i _targetPos)
 			// Remove it from the old position
 			m_contents[oldPos.y][oldPos.x].erase(it);
 
-			// Add it to its new position
-			//m_contents[_targetPos.y][_targetPos.x].push_back(_toMove);
-
-			// Tell the object it's new position
-			_toMove->SetGridPosition(_targetPos);
+			delete _toDelete;
 
 			// Return success
 			return true;

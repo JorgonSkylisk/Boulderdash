@@ -4,6 +4,7 @@
 #include "Level.h"
 #include "Dirt.h"
 #include "Rock.h"
+#include "Diamond.h"
 
 Player::Player()
 	: GridObject()
@@ -116,6 +117,20 @@ bool Player::AttemptMove(sf::Vector2i _direction)
 		//Blocked
 		//Can blockage be pushed 
 		Rock* PushableRock = dynamic_cast<Rock*>(Blocker);
+		Dirt* dirt = dynamic_cast<Dirt*>(Blocker);
+		Diamond* diamond = dynamic_cast<Diamond*>(Blocker);
+
+		if (dirt != nullptr)
+		{
+			m_level->RemoveObject(Blocker);
+			return m_level->MoveObjectTo(this, targetPos);
+		}
+
+		if (diamond != nullptr)
+		{
+			m_level->RemoveObject(Blocker);
+			return m_level->MoveObjectTo(this, targetPos);
+		}
 
 		//if so attempt to push 
 		if (PushableRock != nullptr)
@@ -175,9 +190,8 @@ bool Player::Delete(sf::Vector2i _direction)
 		if (dirt != nullptr)
 		{
 
-				return m_level->RemoveObject(this, targetPos);
+				return m_level->RemoveObject(this);
 			
-			//move to new spot(where blockage was)
 		}
 
 	}
