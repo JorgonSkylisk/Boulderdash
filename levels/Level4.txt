@@ -1,0 +1,12 @@
+W W W W W W W W W W W W W
+W D D R D D D D D D D D W
+W D D D D D D D R D D D W
+W D D R D D D D D D D D W
+W D D D D D D D D D D D W
+W D D D J D D D J D D D W
+W D D D D D D D D D D D W
+W D D D J D D D D D D D W
+W D D D D D - D D D D D W
+W D D R D D - - D D D D W
+W E D D D D D D D D D P W
+W W W W W W W W W W W W W
