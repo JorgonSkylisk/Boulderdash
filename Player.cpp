@@ -4,6 +4,7 @@
 #include "Level.h"
 #include "Dirt.h"
 #include "Rock.h"
+#include "Exit.h"
 #include "Diamond.h"
 
 Player::Player()
@@ -15,6 +16,7 @@ Player::Player()
 	m_sprite.setTexture(AssetManager::GetTexture("graphics/player/playerStandDown.png"));
 	m_moveSound.setBuffer(AssetManager::GetSoundBuffer("audio/footstep1.ogg"));
 	m_bumpSound.setBuffer(AssetManager::GetSoundBuffer("audio/bump.wav"));
+	m_blocksMovement = true;
 }
 
 void Player::Input(sf::Event _gameEvent)
@@ -119,6 +121,7 @@ bool Player::AttemptMove(sf::Vector2i _direction)
 		Rock* PushableRock = dynamic_cast<Rock*>(Blocker);
 		Dirt* dirt = dynamic_cast<Dirt*>(Blocker);
 		Diamond* diamond = dynamic_cast<Diamond*>(Blocker);
+		Exit* exit = dynamic_cast<Exit*>(Blocker);
 
 		if (dirt != nullptr)
 		{
@@ -129,6 +132,12 @@ bool Player::AttemptMove(sf::Vector2i _direction)
 		if (diamond != nullptr)
 		{
 			m_level->RemoveObject(Blocker);
+			return m_level->MoveObjectTo(this, targetPos);
+		}
+
+		if (exit != nullptr)
+		{
+
 			//check if level complete
 			m_level->CheckComplete();
 			return m_level->MoveObjectTo(this, targetPos);
@@ -137,7 +146,7 @@ bool Player::AttemptMove(sf::Vector2i _direction)
 		//if so attempt to push 
 		if (PushableRock != nullptr)
 		{
-			bool pushSucceeded = PushableRock->AttemptPush(_direction);
+			bool pushSucceeded = PushableRock->AttemptDrop(_direction);
 			//if push succeeded 
 			if (pushSucceeded == true)
 			{

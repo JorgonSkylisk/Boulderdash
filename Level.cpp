@@ -389,14 +389,9 @@ bool Level::CheckComplete()
 				if (diamond != nullptr)
 				{
 					// It is box
-
-					// is it stored
-					//if (diamond->GetStored() == false)
-					//{
-						//not stored
-						// any single box not stored means leve not complete 
-						return false;
-					//}
+				
+					return false;
+					
 				}
 			}
 		}

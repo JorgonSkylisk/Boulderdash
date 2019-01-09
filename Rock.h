@@ -10,5 +10,18 @@ public:
 
 	Rock();
 
-	bool AttemptPush(sf::Vector2i _direction);
+	bool Remove(sf::Vector2i _direction);
+	void Update(sf::Time _frameTime);
+	bool AttemptDrop(sf::Vector2i _direction);
+
+
+private:
+
+	bool m_stored;
+
+
+
+	float m_timer;
+	float m_falltimer;
+
 };
