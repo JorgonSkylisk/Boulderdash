@@ -129,6 +129,8 @@ bool Player::AttemptMove(sf::Vector2i _direction)
 		if (diamond != nullptr)
 		{
 			m_level->RemoveObject(Blocker);
+			//check if level complete
+			m_level->CheckComplete();
 			return m_level->MoveObjectTo(this, targetPos);
 		}
 

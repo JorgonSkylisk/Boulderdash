@@ -39,3 +39,8 @@ bool Diamond::Remove(sf::Vector2i _direction)
 // Default
 	return true;
 }
+
+bool Diamond::GetStored()
+{
+	return m_stored;
+}

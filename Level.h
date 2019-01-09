@@ -25,11 +25,13 @@ public:
 	bool MoveObjectTo(GridObject* _toMove, sf::Vector2i _targetPos);
 	bool RemoveObject(GridObject* _toDelete);
 	std::vector< GridObject* > GetObjectAt(sf::Vector2i _targetPos);
+	bool CheckComplete();
 
 private: 
 
 	const float m_cellSize;
 	int m_currentLevel;
+	int m_pendingLevel;
 	std::vector< std::vector< sf::Sprite > > m_background;
 	std::vector< std::vector< std::vector< GridObject* > > > m_contents;
 

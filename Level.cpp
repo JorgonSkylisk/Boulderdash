@@ -2,6 +2,7 @@
 #include "Level.h"
 #include "Framework/AssetManager.h"
 #include "Wall.h"
+#include "Exit.h"
 #include "Storage.h"
 #include "Player.h"
 #include "Rock.h"
@@ -15,6 +16,7 @@
 Level::Level()
 	: m_cellSize(64.0f)
 	, m_currentLevel(0)
+	, m_pendingLevel(0)
 	, m_background()
 	, m_contents()
 {
@@ -76,6 +78,17 @@ void Level::Update(sf::Time _frameTime)
 			}
 		}
 	}
+
+	// if there is a pending level waiting, 
+	if (m_pendingLevel != 0)
+	{
+		//load it 
+		LoadLevel(m_pendingLevel);
+		//remove pending level
+		m_pendingLevel = 0;
+	}
+
+
 }
 
 void Level::Input(sf::Event _gameEvent)
@@ -195,6 +208,13 @@ void Level::LoadLevel(int _levelToLoad)
 				rock->SetLevel(this);
 				rock->SetGridPosition(x, y);
 				m_contents[y][x].push_back(rock);
+			}
+			else if (ch == 'E')
+			{
+				Exit* exit = new Exit();
+				exit->SetLevel(this);
+				exit->SetGridPosition(x, y);
+				m_contents[y][x].push_back(exit);
 			}
 			else if (ch == 'S')
 			{
@@ -345,4 +365,49 @@ bool Level::RemoveObject(GridObject* _toDelete)
 
 	// return failure
 	return false;
+}
+
+bool Level::CheckComplete()
+{
+
+
+	// loop through and check all boxes and see if they are stored
+	// rows
+	for (int y = 0; y < m_contents.size(); ++y)
+	{
+		// cells
+		for (int x = 0; x < m_contents[y].size(); ++x)
+		{
+			// sticky outies (grid objects)
+			for (int z = 0; z < m_contents[y][x].size(); ++z)
+			{
+				//the current object we are examining
+				GridObject* thisObject = m_contents[y][x][z];
+
+				//check if it is a box via dynamic cast
+				Diamond* diamond = dynamic_cast<Diamond*>(thisObject);
+				if (diamond != nullptr)
+				{
+					// It is box
+
+					// is it stored
+					//if (diamond->GetStored() == false)
+					//{
+						//not stored
+						// any single box not stored means leve not complete 
+						return false;
+					//}
+				}
+			}
+		}
+	}
+
+	//all boxes were stored so level complete
+	//todo: Victory Music
+
+	// queue the next level during the next update
+	// (if done right away, we get access violation due to update still running)
+	m_pendingLevel = m_currentLevel + 1;
+
+	return true;
 }
