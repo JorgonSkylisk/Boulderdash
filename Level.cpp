@@ -106,6 +106,11 @@ void Level::Input(sf::Event _gameEvent)
 			}
 		}
 	}
+		if (_gameEvent.key.code == sf::Keyboard::R)
+		{
+		//Reload level
+		ReloadLevel();
+		}
 }
 
 
