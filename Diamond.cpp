@@ -8,6 +8,8 @@
 
 Diamond::Diamond()
 	: GridObject()
+	, m_timer(0)
+	, m_falltimer(0.5)
 {
 	m_sprite.setTexture(AssetManager::GetTexture("graphics/storage.png"));
 	m_blocksMovement = true;

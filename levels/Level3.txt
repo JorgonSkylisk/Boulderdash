@@ -1,10 +1,10 @@
 W W W W W W W W W W W W W
 W D D D - - R D D D D D W
 W D E - - R J R - - K - W
-W - - D D W R D D D D D W
+W R - D D W R D D D D D W
 W R - - - R D D D D D D W
-W J - - D D W W W - - - W
-W - - - D - - J R D - - W
-W D D - D - W W W - P - W
+W J - - R R W W W D - - W
+W - - - D D - J R D - - W
+W D D - W W W W W D P - W
 W D D - - D - - D D D D W
 W W W W W W W W W W W W W
