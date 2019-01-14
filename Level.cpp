@@ -221,13 +221,6 @@ void Level::LoadLevel(int _levelToLoad)
 				exit->SetGridPosition(x, y);
 				m_contents[y][x].push_back(exit);
 			}
-			else if (ch == 'S')
-			{
-				Storage* storage = new Storage();
-				storage->SetLevel(this);
-				storage->SetGridPosition(x, y);
-				m_contents[y][x].push_back(storage);
-			}
 			else if (ch == 'D')
 			{
 				Dirt* dirt = new Dirt();
@@ -360,7 +353,7 @@ bool Level::RemoveObject(GridObject* _toDelete)
 
 			// Remove it from the old position
 			m_contents[oldPos.y][oldPos.x].erase(it);
-
+ 
 			delete _toDelete;
 
 			// Return success
@@ -376,7 +369,7 @@ bool Level::CheckComplete()
 {
 
 
-	// loop through and check all boxes and see if they are stored
+	// loop through and check all diamonds
 	// rows
 	for (int y = 0; y < m_contents.size(); ++y)
 	{
@@ -389,11 +382,11 @@ bool Level::CheckComplete()
 				//the current object we are examining
 				GridObject* thisObject = m_contents[y][x][z];
 
-				//check if it is a box via dynamic cast
+				//check if it has a diamond via dynamic cast
 				Diamond* diamond = dynamic_cast<Diamond*>(thisObject);
 				if (diamond != nullptr)
 				{
-					// It is box
+					// Diamonds still exist in level
 				
 					return false;
 					
@@ -402,8 +395,7 @@ bool Level::CheckComplete()
 		}
 	}
 
-	//all boxes were stored so level complete
-	//todo: Victory Music
+	//all diamonds were collected so level complete
 
 	// queue the next level during the next update
 	// (if done right away, we get access violation due to update still running)

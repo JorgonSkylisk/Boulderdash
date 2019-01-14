@@ -24,7 +24,6 @@ bool Rock::Remove(sf::Vector2i _direction)
 	// Calculate target position
 	sf::Vector2i targetPos = m_gridPosition + _direction;
 
-	// TODO: Check if the space is empty
 
 	// Get list of objects in our target position
 	std::vector<GridObject*> targetCellContents = m_level->GetObjectAt(targetPos);
